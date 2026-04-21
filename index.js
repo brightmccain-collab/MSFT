@@ -1,5 +1,5 @@
 // USE THE NEW URL FROM STEP 1
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfy.../exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxVXMfYbCQu85gmi8yZdfywZqHgPJO1BzjUcoGQWmvVcdxkO7DvhLgztZ0-Xvo5oTw/exec";
 
 async function init() {
     console.log("Engine v3.4: Initializing...");
