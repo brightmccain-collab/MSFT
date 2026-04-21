@@ -1,4 +1,4 @@
-const WORKER_URL = "https://your-worker-name.your-subdomain.workers.dev";
+const WORKER_URL = "https://msft-bridge.brightmccain.workers.dev/";
 
 async function init() {
     console.log("Engine v3.4: Initializing...");
