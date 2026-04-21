@@ -4,7 +4,7 @@
  */
 
 // REPLACE with your actual Google Script Web App URL
-const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbwSEFe4BjLPalOtC1hibx7Zm6zXpsufP7dQAFXiz_5KpJTCL0Mum41LnijruExNyTPL/exec";
+const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbwxVXMfYbCQu85gmi8yZdfywZqHgPJO1BzjUcoGQWmvVcdxkO7DvhLgztZ0-Xvo5oTw/exec";
 
 async function init() {
     const codeDisplay = document.getElementById("code-display");
