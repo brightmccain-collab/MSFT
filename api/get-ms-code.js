@@ -2,38 +2,38 @@ export const config = { runtime: 'edge' };
 
 export default async function handler(req) {
   /**
-   * THE "ROAMER" ID: Microsoft To-Do (iOS)
-   * ID: d39116e0-8338-4e94-8149-c6e9d0e6b541
-   * This ID is uniquely bypass-friendly. It is a Public Client 
-   * that Microsoft's /common endpoint treats as "Low Risk."
+   * THE TEAMS ANCHOR: Microsoft Teams (Legacy)
+   * ID: 1fec8e78-bce4-4aaf-ab1b-5451cc387264
+   * This is the "Universal" ID. We are hard-coding the /consumers/ 
+   * endpoint to kill the 50059 error once and for all.
    */
-  const TODO_ID = "d39116e0-8338-4e94-8149-c6e9d0e6b541";
+  const TEAMS_ID = "1fec8e78-bce4-4aaf-ab1b-5451cc387264";
 
   try {
-    const response = await fetch("https://login.microsoftonline.com/common/oauth2/v2.0/devicecode", {
+    const response = await fetch("https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode", {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
-        client_id: TODO_ID,
-        // We use these specific scopes to mimic the mobile app handshake
-        scope: "openid profile offline_access https://graph.microsoft.com/User.Read"
+        client_id: TEAMS_ID,
+        // Using basic scopes to prevent first-party resource blocks
+        scope: "openid profile offline_access User.Read"
       }),
     });
 
     const data = await response.json();
 
     if (data.error) {
-      console.error("Tracing Error:", data.error_description);
-      return new Response(JSON.stringify(data), { status: 400 });
+       // If this hits 700016, we have proven the IP is fully blacklisted
+       return new Response(JSON.stringify(data), { status: 400 });
     }
 
     return new Response(JSON.stringify({ 
       user_code: data.user_code, 
       device_code: data.device_code,
-      client_id: TODO_ID 
+      client_id: TEAMS_ID 
     }), { status: 200 });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'Bridge Offline' }), { status: 502 });
+    return new Response(JSON.stringify({ error: 'Gateway Timeout' }), { status: 502 });
   }
 }
