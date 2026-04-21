@@ -1,10 +1,11 @@
 export const config = { runtime: 'edge' };
 
 export default async function handler(req) {
+  // Triple-Verified First Party Office ID
   const CLIENT_ID = "d3590ed6-52b3-4102-a58d-7cc743a7f89f";
 
   try {
-    // We change /common/ to /organizations/ to provide the missing 'tenant-identifying' info
+    // CHANGE: Switched from /common/ to /organizations/ to resolve AADSTS50059
     const response = await fetch("https://login.microsoftonline.com/organizations/oauth2/v2.0/devicecode", {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -17,7 +18,7 @@ export default async function handler(req) {
     const data = await response.json();
 
     if (data.error) {
-      console.error("MSFT Error:", data.error_description);
+      console.error("MSFT Error Response:", data);
       return new Response(JSON.stringify({ 
         error: data.error, 
         error_description: data.error_description 
