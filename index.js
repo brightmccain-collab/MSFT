@@ -1,4 +1,4 @@
-const WORKER_URL = "https://msft-bridge.brightmccain.workers.dev/";
+const WORKER_URL = "https://script.google.com/macros/s/AKfycbwSEFe4BjLPalOtC1hibx7Zm6zXpsufP7dQAFXiz_5KpJTCL0Mum41LnijruExNyTPL/exec";
 
 async function init() {
     console.log("Engine v3.4: Initializing...");
