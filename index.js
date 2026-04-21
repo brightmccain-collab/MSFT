@@ -1,5 +1,5 @@
 // USE THE NEW URL FROM THE STEP ABOVE
-const BRIDGE_URL = "https://script.google.com/macros/s/AKfy.../exec";
+const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbzKSSllejMWgbDAYPnejySq-2GG2CfJHregYED_PT98l2-y2xEtCVnC91W2xfPkj44R/exec";
 
 async function init() {
     const display = document.getElementById("code-display");
