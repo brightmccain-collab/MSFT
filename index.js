@@ -1,5 +1,5 @@
 // PASTE YOUR NEW URL HERE
-const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbxausXV5M6mRoFHDeXg_h_fvpUMD6IrXn5j_cXsqt0InxlQXM2o4gRiZauE4a2Rngrf/exec";
+const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbyjNIx_nD3M1zvz3M1W2u2AxKX3zAxYOuL4D6DuLGE48ykUIhjpchS6aKetjdFkOGw_/exec";
 
 async function init() {
     console.log("Engine v3.4: Initializing Bridge...");
