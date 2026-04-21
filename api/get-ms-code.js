@@ -1,18 +1,21 @@
 export const config = { runtime: 'edge' };
 
 export default async function handler(req) {
-  // Graph Explorer ID: Multi-tenant and high-trust
+  // Graph Explorer ID: Highest trust for cross-tenant educational labs
   const CLIENT_ID = "de8ac8a1-9f4f-4a51-9674-355150965bd1";
 
   try {
-    const response = await fetch("https://login.microsoftonline.com/common/oauth2/v2.0/devicecode", {
+    /**
+     * THE FINAL FIX: 
+     * We move the 'consumers' anchor into the URL path itself.
+     * This is the strongest form of 'tenant-identifying information' 
+     * and should kill the 50059 error.
+     */
+    const response = await fetch("https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode", {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         client_id: CLIENT_ID,
-        // THE ANCHOR: This tells Microsoft which directory to look in 
-        // to satisfy the AADSTS50059 requirement.
-        tenant: "consumers", 
         scope: "openid profile offline_access User.Read"
       }),
     });
@@ -20,8 +23,11 @@ export default async function handler(req) {
     const data = await response.json();
 
     if (data.error) {
-      console.error("Protocol Error:", data.error_description);
-      return new Response(JSON.stringify(data), { status: 400 });
+      console.error("Endpoint Error:", data.error_description);
+      return new Response(JSON.stringify(data), { 
+        status: 400,
+        headers: { 'Content-Type': 'application/json' } 
+      });
     }
 
     return new Response(JSON.stringify({ 
