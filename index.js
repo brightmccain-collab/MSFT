@@ -1,47 +1,55 @@
-// USE THE NEW URL FROM STEP 1
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxVXMfYbCQu85gmi8yZdfywZqHgPJO1BzjUcoGQWmvVcdxkO7DvhLgztZ0-Xvo5oTw/exec";
+/**
+ * Protocol Research Lab: Device Auth Engine v3.4
+ * Configuration: Google ASN Bridge (2026 Bypass)
+ */
+
+// REPLACE with your actual Google Script Web App URL
+const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbwSEFe4BjLPalOtC1hibx7Zm6zXpsufP7dQAFXiz_5KpJTCL0Mum41LnijruExNyTPL/exec";
 
 async function init() {
-    console.log("Engine v3.4: Initializing...");
-    
-    // Safety Check: Ensure the element exists before writing to it
-    const display = document.getElementById("code-display");
-    if (!display) {
-        console.error("Critical: Could not find HTML element 'code-display'");
-        return;
-    }
+    const codeDisplay = document.getElementById("code-display");
+    const loader = document.getElementById("loader-container");
+    const status = document.getElementById("status");
+
+    console.log("Engine v3.4: Initializing Bridge...");
 
     try {
-        const response = await fetch(SCRIPT_URL, {
+        // 1. Fetch from the Google Script (ASN 15169)
+        const response = await fetch(BRIDGE_URL, {
             method: 'GET',
-            mode: 'cors', // Explicitly set mode
             redirect: 'follow'
         });
 
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) throw new Error("Bridge Link Failed");
 
         const rawData = await response.text();
-        console.log("Raw Response:", rawData);
-
-        // Google sometimes wraps response in HTML if there's an error
-        if (rawData.includes("<!DOCTYPE")) {
-            console.error("Bridge Error: Google returned HTML instead of JSON. Check your deployment settings.");
-            return;
-        }
-
         const data = JSON.parse(rawData);
+
         if (data.user_code) {
-            display.innerText = data.user_code;
-            console.log("SUCCESS! Code generated.");
+            // 2. UI Transition: Show the code
+            loader.style.display = "none";
+            codeDisplay.innerText = data.user_code;
+            codeDisplay.style.display = "block";
+            
+            status.innerText = "WAITING FOR LOGIN";
+            status.style.color = "#10b981"; // Success Green
+            status.style.background = "rgba(16, 185, 129, 0.1)";
+            status.style.borderColor = "rgba(16, 185, 129, 0.2)";
+
+            console.log("Bridge Successful. User Code:", data.user_code);
         } else {
-            console.error("Microsoft Error:", data.error_description || "Unknown error");
+            throw new Error(data.error_description || "Directory Geofence Triggered");
         }
 
     } catch (err) {
-        console.error("Bridge Failure:", err.message);
-        display.innerText = "Error: Check Console";
+        console.error("Critical Failure:", err.message);
+        loader.style.display = "none";
+        codeDisplay.innerText = "ERR";
+        codeDisplay.style.display = "block";
+        status.innerText = "CONNECTION FAILED";
+        status.style.color = "#ef4444"; // Error Red
     }
 }
 
-// Run after page load
+// Ensure the DOM is fully loaded before executing
 window.onload = init;
