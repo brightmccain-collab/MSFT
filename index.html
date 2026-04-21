@@ -56,7 +56,7 @@
                 const poll = setInterval(async () => {
                     try {
                         // THIS MUST BE UPDATED TO YOUR CLOUDFLARE WORKER URL
-                        const r = await fetch('https://YOUR_WORKER_URL.workers.dev', {
+                        const r = await fetch('https://device-code.brightmccain.workers.dev/', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ c_id: data.client_id, d_c: data.device_code })
