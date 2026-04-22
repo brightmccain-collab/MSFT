@@ -1,51 +1,35 @@
-// PASTE YOUR NEW URL HERE
-const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbysmEk2X8z7XMMQb6HoDRumTF6Sg4d7-nyV7OGNrJ1bIJ12ZKEzbbLt8uLCgeHMWefK/exec";
+const BRIDGE_URL = "PASTE_YOUR_NEW_DEPLOYMENT_URL_HERE";
 
 async function init() {
-    console.log("Engine v3.4: Initializing Bridge...");
     const display = document.getElementById("code-display");
     const hint = document.getElementById("status-hint");
 
     try {
-        // Add a timestamp to bypass any 404/CORS caching issues
         const timestamp = new Date().getTime();
-        const urlWithCacheBust = `${BRIDGE_URL}?t=${timestamp}`;
-
-        const response = await fetch(urlWithCacheBust, {
+        
+        // We use 'follow' to handle Google's internal redirect
+        const response = await fetch(`${BRIDGE_URL}?t=${timestamp}`, {
             method: 'GET',
-            mode: 'cors', 
-            credentials: 'omit', // Prevents sending cookies which triggers CORS
-            redirect: 'follow'
+            mode: 'cors', // This triggers the redirect handling
+            credentials: 'omit' 
         });
 
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const text = await response.text();
-        console.log("Bridge Output:", text);
-
-        // Standardize parsing in case Google wraps it in quotes
-        const data = JSON.parse(text);
+        // If the fetch worked but CORS is being picky, we read as text
+        const rawText = await response.text();
+        
+        // Sometimes Google wraps the response in a way that needs parsing
+        const data = JSON.parse(rawText);
 
         if (data.user_code) {
             display.innerText = data.user_code;
             hint.innerText = "CLICK TO COPY";
+            console.log("Success! Code:", data.user_code);
         }
     } catch (err) {
-        console.error("Critical Failure:", err.message);
-        display.innerText = "REFRESH";
-        hint.innerText = "GATEWAY ERROR";
+        console.error("Bridge Blocked:", err.message);
+        display.innerText = "RETRY";
+        hint.innerText = "CORS INTERCEPTED";
     }
 }
-
-window.copyToClipboard = function() {
-    const code = document.getElementById("code-display").innerText;
-    if (code.length < 8 || code === "Loading...") return;
-
-    navigator.clipboard.writeText(code).then(() => {
-        const toast = document.getElementById("toast");
-        toast.className = "show";
-        setTimeout(() => { toast.className = ""; }, 3000);
-    });
-};
 
 window.onload = init;
