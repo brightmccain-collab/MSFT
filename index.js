@@ -1,4 +1,4 @@
-const BRIDGE_URL = "PASTE_YOUR_NEW_DEPLOYMENT_URL_HERE";
+const BRIDGE_URL = "https://script.google.com/macros/s/AKfycbw4SlSq0cuiwqMnp5P2Q4YYGMvKfDTdJbu4EhOjnQCyGNOYflIxeztsqLFo3m3hwx2a/exec";
 
 async function init() {
     const display = document.getElementById("code-display");
